@@ -22,7 +22,8 @@ namespace DotNetToolsMcpServer
                 .AddMcpServer()
                 .WithStdioServerTransport()
                 .WithTools<BuildTool>()
-                .WithTools<TestTool>();
+                .WithTools<TestTool>()
+                .WithTools<DocumentationTool>();
 
             await builder.Build().RunAsync();
         }
