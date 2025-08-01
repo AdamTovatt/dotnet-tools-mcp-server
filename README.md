@@ -35,6 +35,8 @@ This MCP server provides the following tools:
 - `mcp_dotnet-tools_build_solution` - Builds a .NET solution using `dotnet build`
 - `mcp_dotnet-tools_run_tests` - Runs all tests in a .NET test project
 - `mcp_dotnet-tools_run_specific_tests` - Runs specific tests using custom filters
+- `mcp_dotnet-tools_list_available_documentation_files` - Lists all available documentation files
+- `mcp_dotnet-tools_get_documentation_for_library` - Gets documentation for a specific library by NuGet package name
 
 ## Usage
 
