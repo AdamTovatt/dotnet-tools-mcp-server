@@ -1,6 +1,5 @@
 using ModelContextProtocol.Server;
 using System.ComponentModel;
-using System.Text.RegularExpressions;
 
 namespace DotNetToolsMcpServer
 {
@@ -8,34 +7,21 @@ namespace DotNetToolsMcpServer
     public class DocumentationTool
     {
         private static readonly HttpClient httpClient = new HttpClient();
-        private static readonly string documentationIndexUrl = "https://raw.githubusercontent.com/AdamTovatt/library-documentation-files/refs/heads/main/README.md";
+        private static readonly LibraryConfigurationManager _configManager = new LibraryConfigurationManager(new DefaultConfigFilePathProvider());
 
         [McpServerTool, Description("Lists all available documentation files by fetching and parsing the documentation index.")]
         public static string ListAvailableDocumentationFiles()
         {
             try
             {
-                string indexContent = httpClient.GetStringAsync(documentationIndexUrl).Result;
+                List<LibraryInfo> libraries = _configManager.GetLibraries();
                 
-                // Parse markdown links to extract library names
-                List<string> libraryNames = new List<string>();
-                string pattern = @"- \[([^\]]+)\]\([^)]+\)";
-                
-                MatchCollection matches = Regex.Matches(indexContent, pattern);
-                foreach (Match match in matches)
-                {
-                    if (match.Groups.Count > 1)
-                    {
-                        string libraryName = match.Groups[1].Value;
-                        libraryNames.Add(libraryName);
-                    }
-                }
-
-                if (libraryNames.Count == 0)
+                if (libraries.Count == 0)
                 {
                     return "No documentation files found.";
                 }
 
+                List<string> libraryNames = libraries.Select(lib => lib.Name).ToList();
                 return $"Available documentation files:\n{string.Join("\n", libraryNames)}";
             }
             catch (Exception ex)
@@ -49,21 +35,13 @@ namespace DotNetToolsMcpServer
         {
             try
             {
-                // First get the index to find the URL for the specific library
-                string indexContent = httpClient.GetStringAsync(documentationIndexUrl).Result;
+                string documentationUrl = _configManager.GetLibraryUrl(libraryNugetPackageName);
                 
-                // Find the URL for the specified library
-                string pattern = $@"- \[{Regex.Escape(libraryNugetPackageName)}\]\(([^)]+)\)";
-                Match match = Regex.Match(indexContent, pattern);
-                
-                if (!match.Success)
+                if (string.IsNullOrEmpty(documentationUrl))
                 {
                     return $"Library '{libraryNugetPackageName}' not found in documentation index.";
                 }
 
-                string documentationUrl = match.Groups[1].Value;
-                
-                // Fetch the documentation content
                 string documentationContent = httpClient.GetStringAsync(documentationUrl).Result;
                 
                 return $"Documentation for {libraryNugetPackageName}:\n\n{documentationContent}";

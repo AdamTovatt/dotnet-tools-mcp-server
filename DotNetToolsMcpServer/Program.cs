@@ -8,6 +8,15 @@ namespace DotNetToolsMcpServer
     {
         static async Task Main(string[] args)
         {
+            // Check if CLI mode is requested
+            if (args.Length > 0)
+            {
+                int exitCode = CliHandler.HandleCli(args);
+                Environment.Exit(exitCode);
+                return;
+            }
+
+            // Run as MCP server (existing behavior)
             HostApplicationBuilder builder = Host.CreateApplicationBuilder(args);
             builder.Logging.AddConsole(consoleLogOptions =>
             {
