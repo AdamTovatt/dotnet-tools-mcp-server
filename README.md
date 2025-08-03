@@ -28,6 +28,51 @@ Add this to your Cursor settings to use the MCP server:
 
 Replace the command path with the actual location of the executable on your system.
 
+## Usage
+
+### MCP Server Mode
+
+When run without command line arguments, the server operates as an MCP server for Cursor integration.
+
+### CLI Mode
+
+When run with command line arguments, the server operates as a CLI tool for managing library documentation configuration.
+
+#### CLI Commands
+
+- `add-library --name="LibraryName" --url="https://..."` - Add a library documentation URL
+- `remove-library --name="LibraryName"` - Remove a library from configuration
+- `list-libraries` - List all configured libraries
+- `config-path` - Display the path to the configuration file
+- `open-config` - Open the configuration file in the default editor
+
+#### Examples
+
+```bash
+# Add a library
+DotNetToolsMcpServer add-library --name="EasyReasy" --url="https://raw.githubusercontent.com/AdamTovatt/easy-reasy/refs/heads/master/EasyReasy/README.md"
+
+# List all libraries
+DotNetToolsMcpServer list-libraries
+
+# Show config file location
+DotNetToolsMcpServer config-path
+
+# Open config file for editing
+DotNetToolsMcpServer open-config
+```
+
+#### Configuration File
+
+The configuration is stored in a local markdown file at:
+- **Windows**: `%APPDATA%\DotNetToolsMcpServer\libraries.md`
+- **macOS/Linux**: `~/.config/DotNetToolsMcpServer/libraries.md`
+
+The file uses markdown format:
+```markdown
+- [LibraryName](https://url-to-documentation.md)
+```
+
 ## Tools
 
 This MCP server provides the following tools:
@@ -38,6 +83,6 @@ This MCP server provides the following tools:
 - `mcp_dotnet-tools_list_available_documentation_files` - Lists all available documentation files
 - `mcp_dotnet-tools_get_documentation_for_library` - Gets documentation for a specific library by NuGet package name
 
-## Usage
+## Library Documentation
 
-Once configured, Cursor can invoke these methods to build and test .NET projects directly without relying on the terminal. 
+The server supports user-configurable library documentation. Instead of using a hardcoded URL, users can add their own library documentation files through the CLI commands. The documentation tool will read from the local configuration file to provide documentation for configured libraries. 
