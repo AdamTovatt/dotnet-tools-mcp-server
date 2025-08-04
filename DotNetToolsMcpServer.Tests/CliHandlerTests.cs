@@ -43,7 +43,6 @@ namespace DotNetToolsMcpServer.Tests
             {
                 Console.SetOut(_originalConsoleOut);
             }
-
             _consoleOutput?.Dispose();
         }
 
@@ -54,12 +53,47 @@ namespace DotNetToolsMcpServer.Tests
             Assert.AreEqual(1, exitCode);
             
             string output = _consoleOutput!.ToString();
+            Assert.IsTrue(output.Contains("DotNetToolsMcpServer - MCP Server and CLI Tool for .NET Tools"));
             Assert.IsTrue(output.Contains("Usage:"));
             Assert.IsTrue(output.Contains("add-library"));
             Assert.IsTrue(output.Contains("remove-library"));
             Assert.IsTrue(output.Contains("list-libraries"));
             Assert.IsTrue(output.Contains("config-path"));
             Assert.IsTrue(output.Contains("open-config"));
+            Assert.IsTrue(output.Contains("-h, -help, --help"));
+        }
+
+        [TestMethod]
+        public void TestCliHandler_HelpFlag_H()
+        {
+            int exitCode = CliHandler.HandleCli(new[] { "-h" }, _configManager!);
+            Assert.AreEqual(0, exitCode);
+            
+            string output = _consoleOutput!.ToString();
+            Assert.IsTrue(output.Contains("DotNetToolsMcpServer - MCP Server and CLI Tool for .NET Tools"));
+            Assert.IsTrue(output.Contains("Usage:"));
+        }
+
+        [TestMethod]
+        public void TestCliHandler_HelpFlag_Help()
+        {
+            int exitCode = CliHandler.HandleCli(new[] { "-help" }, _configManager!);
+            Assert.AreEqual(0, exitCode);
+            
+            string output = _consoleOutput!.ToString();
+            Assert.IsTrue(output.Contains("DotNetToolsMcpServer - MCP Server and CLI Tool for .NET Tools"));
+            Assert.IsTrue(output.Contains("Usage:"));
+        }
+
+        [TestMethod]
+        public void TestCliHandler_HelpFlag_DoubleHelp()
+        {
+            int exitCode = CliHandler.HandleCli(new[] { "--help" }, _configManager!);
+            Assert.AreEqual(0, exitCode);
+            
+            string output = _consoleOutput!.ToString();
+            Assert.IsTrue(output.Contains("DotNetToolsMcpServer - MCP Server and CLI Tool for .NET Tools"));
+            Assert.IsTrue(output.Contains("Usage:"));
         }
 
         [TestMethod]
@@ -70,6 +104,7 @@ namespace DotNetToolsMcpServer.Tests
             
             string output = _consoleOutput!.ToString();
             Assert.IsTrue(output.Contains("Unknown command: unknown-command"));
+            Assert.IsTrue(output.Contains("Use -help, --help, or -h for usage information."));
         }
 
         [TestMethod]

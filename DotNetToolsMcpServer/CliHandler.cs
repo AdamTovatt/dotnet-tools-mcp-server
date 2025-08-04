@@ -15,16 +15,18 @@ namespace DotNetToolsMcpServer
         {
             if (args.Length == 0)
             {
-                Console.WriteLine("Usage:");
-                Console.WriteLine("  add-library --name=\"LibraryName\" --url=\"https://...\"");
-                Console.WriteLine("  remove-library --name=\"LibraryName\"");
-                Console.WriteLine("  list-libraries");
-                Console.WriteLine("  config-path");
-                Console.WriteLine("  open-config");
+                PrintUsage();
                 return 1;
             }
 
             string command = args[0].ToLowerInvariant();
+
+            // Check for help flags
+            if (command == "-help" || command == "--help" || command == "-h")
+            {
+                PrintUsage();
+                return 0;
+            }
 
             switch (command)
             {
@@ -40,8 +42,44 @@ namespace DotNetToolsMcpServer
                     return HandleOpenConfig(configManager);
                 default:
                     Console.WriteLine($"Unknown command: {command}");
+                    Console.WriteLine("Use -help, --help, or -h for usage information.");
                     return 1;
             }
+        }
+
+        private static void PrintUsage()
+        {
+            Console.WriteLine("DotNetToolsMcpServer - MCP Server and CLI Tool for .NET Tools");
+            Console.WriteLine();
+            Console.WriteLine("Usage:");
+            Console.WriteLine("  DotNetToolsMcpServer [command] [options]");
+            Console.WriteLine();
+            Console.WriteLine("Commands:");
+            Console.WriteLine("  add-library --name=\"LibraryName\" --url=\"https://...\"");
+            Console.WriteLine("    Add a library documentation URL to the configuration");
+            Console.WriteLine();
+            Console.WriteLine("  remove-library --name=\"LibraryName\"");
+            Console.WriteLine("    Remove a library from the configuration");
+            Console.WriteLine();
+            Console.WriteLine("  list-libraries");
+            Console.WriteLine("    List all configured libraries");
+            Console.WriteLine();
+            Console.WriteLine("  config-path");
+            Console.WriteLine("    Display the path to the configuration file");
+            Console.WriteLine();
+            Console.WriteLine("  open-config");
+            Console.WriteLine("    Open the configuration file in the default editor");
+            Console.WriteLine();
+            Console.WriteLine("Help:");
+            Console.WriteLine("  -h, -help, --help");
+            Console.WriteLine("    Show this help message");
+            Console.WriteLine();
+            Console.WriteLine("Examples:");
+            Console.WriteLine("  DotNetToolsMcpServer add-library --name=\"EasyReasy\" --url=\"https://example.com/readme.md\"");
+            Console.WriteLine("  DotNetToolsMcpServer list-libraries");
+            Console.WriteLine("  DotNetToolsMcpServer config-path");
+            Console.WriteLine();
+            Console.WriteLine("Note: When run without arguments, the server operates as an MCP server for Cursor integration.");
         }
 
         private static int HandleAddLibrary(string[] args, LibraryConfigurationManager configManager)

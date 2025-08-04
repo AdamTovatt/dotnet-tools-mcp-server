@@ -46,9 +46,17 @@ When run with command line arguments, the server operates as a CLI tool for mana
 - `config-path` - Display the path to the configuration file
 - `open-config` - Open the configuration file in the default editor
 
+#### Help
+
+- `-h`, `-help`, `--help` - Show help information
+
 #### Examples
 
 ```bash
+# Show help
+DotNetToolsMcpServer -h
+DotNetToolsMcpServer --help
+
 # Add a library
 DotNetToolsMcpServer add-library --name="EasyReasy" --url="https://raw.githubusercontent.com/AdamTovatt/easy-reasy/refs/heads/master/EasyReasy/README.md"
 
