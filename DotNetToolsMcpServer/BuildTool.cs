@@ -7,6 +7,8 @@ namespace DotNetToolsMcpServer
     [McpServerToolType]
     public class BuildTool
     {
+        const string additionalBuildParameters = "-consoleloggerparameters:\"Summary;Verbosity=normal\" -m -p:\"WarnLevel=5;EnforceCodeStyleInBuild=true\" -t:\"clean,build\" --no-incremental -warnaserror /p:TreatWarningsAsErrors=true /p:RunAnalyzersDuringBuild=true -nologo";
+
         [McpServerTool, Description("Builds a .NET project using dotnet build with the specified absolute path to a .csproj file.")]
         public static string Build(string csprojAbsolutePath)
         {
@@ -15,11 +17,11 @@ namespace DotNetToolsMcpServer
                 ProcessStartInfo startInfo = new ProcessStartInfo
                 {
                     FileName = "dotnet",
-                    Arguments = $"build \"{csprojAbsolutePath}\"",
+                    Arguments = $"build \"{csprojAbsolutePath}\" {additionalBuildParameters}",
                     RedirectStandardOutput = true,
                     RedirectStandardError = true,
                     UseShellExecute = false,
-                    CreateNoWindow = true
+                    CreateNoWindow = true,
                 };
 
                 using Process process = Process.Start(startInfo)!;
@@ -50,7 +52,7 @@ namespace DotNetToolsMcpServer
                 ProcessStartInfo startInfo = new ProcessStartInfo
                 {
                     FileName = "dotnet",
-                    Arguments = $"build \"{solutionAbsolutePath}\"",
+                    Arguments = $"build \"{solutionAbsolutePath}\" {additionalBuildParameters}",
                     RedirectStandardOutput = true,
                     RedirectStandardError = true,
                     UseShellExecute = false,
